@@ -1,205 +1,98 @@
-# Team Members Manager Plugin
+/*
+===========================================
+🧩 TEAM MEMBERS MANAGER PLUGIN - README
+===========================================
 
-## 🧩 Overview
-The **Team Members Manager Plugin** is a self-contained WordPress plugin that manages team members through a custom post type (CPT), provides a REST API for fetching data, and integrates with **Elementor** for displaying members on the frontend with filtering, pagination, and AJAX-powered interactivity.
+📦 Plugin Name: Team Members Manager
+👨‍💻 Developer: Yogesh Yadav
+🌐 Website: https://boldtechie.com
+📅 Version: 1.0.0
+📁 File: readme.txt
+===========================================
+*/
 
----
+/*
+-----------------------------------------------------
+🧩 OVERVIEW
+-----------------------------------------------------
+This plugin allows WordPress admins to manage team members from the backend
+and display them dynamically on the frontend using Elementor.
 
-## ⚙️ Features
-- Custom Post Type: **Team Members**
-- Meta Fields:
-  - Full Name
-  - Role / Designation
-  - Profile Picture (Featured Image)
-  - Email
-  - Skills (comma-separated list)
-- Custom Role: **HR** (can manage team members)
-- REST API Endpoint: `/wp-json/team/v1/members`
-- Elementor Widget: **Team Members Grid**
-  - AJAX-based Filtering (Role, Skills)
-  - Pagination
-  - Grid/List Layouts
-  - Search Bar (optional)
-  - Dark/Light Mode Toggle (optional)
-- Automatic Registration on Activation
-- Safe Cleanup on Deactivation (role/capabilities removed, data preserved)
-- Transient-based caching for performance
+It automatically registers a Custom Post Type (CPT) named “Team Members” 
+with custom fields, a REST API endpoint, a custom HR role, and an Elementor widget
+to show team members with AJAX-based filters and pagination.
+*/
 
----
+/*
+-----------------------------------------------------
+⚙️ WHAT I BUILT
+-----------------------------------------------------
+1️⃣ Custom Post Type: `team_member`
+   - Fields: Full Name, Role/Designation, Email, Skills, Profile Picture (featured image)
 
-## 🧩 Installation
+2️⃣ Custom Role: `HR`
+   - Role Name: `tm_hr`
+   - Capabilities to manage Team Members (add/edit/delete/publish)
 
-### From ZIP (Recommended)
-1. Download the plugin ZIP: `team-members-plugin.zip`
-2. In WordPress Admin → Plugins → Add New → Upload Plugin → Choose ZIP → Install Now
-3. Activate the plugin.
+3️⃣ REST API Endpoint:
+   - URL: /wp-json/team/v1/members
+   - Supports filtering by role, skills, and search keyword
+   - Pagination and caching (via transients)
 
-### Manual Installation
-1. Extract the folder `team-members-plugin`.
-2. Upload it to `/wp-content/plugins/`.
-3. Activate the plugin from WordPress Admin → Plugins.
+4️⃣ Elementor Widget: “Team Members Grid”
+   - Displays all team members dynamically
+   - AJAX filtering by role/skills
+   - Pagination support
+   - Optional search bar and dark/light mode toggle
+   - Works inside Elementor live preview
 
----
+5️⃣ Plugin Lifecycle:
+   - On Activation → Registers CPT + HR role + flushes rewrites
+   - On Deactivation → Removes HR role safely + flushes rewrites
+*/
 
-## 🧰 Backend Details
+/*
+-----------------------------------------------------
+🧠 DESIGN DECISIONS
+-----------------------------------------------------
+| Feature        | Decision                           | Reason |
+|----------------|------------------------------------|--------|
+| Data Storage   | Custom Post Type + Meta Fields     | Native WordPress structure |
+| User Role      | Custom `HR` role                   | Granular access control |
+| API Layer      | Custom REST route `/team/v1/members` | Decoupled backend/frontend |
+| Frontend       | Elementor Widget with AJAX Fetch   | Dynamic & easy to use |
+| Caching        | Transients                         | Lightweight & improves speed |
+*/
 
-### Custom Post Type (CPT)
-**Name:** `team_member`
+/*
+-----------------------------------------------------
+🧪 TESTING DONE
+-----------------------------------------------------
+✅ Plugin activates/deactivates without errors
+✅ CPT and HR role registered correctly
+✅ Team Members can be created and managed
+✅ REST API works with pagination and filters
+✅ Elementor widget fetches members dynamically
+✅ AJAX filtering & pagination tested
+✅ Caching verified (transient stored)
+✅ Dark/Light mode switch works
+✅ No PHP or JS console errors found
+*/
 
-#### Fields:
-| Field | Type | Description |
-|-------|------|--------------|
-| Full Name | Text | Team member’s full name |
-| Role / Designation | Text | Position or title |
-| Email | Email | Contact email |
-| Skills | Text (comma-separated) | e.g. HTML, CSS, JS |
-| Profile Picture | Featured Image | Profile photo |
+/*
+-----------------------------------------------------
+🚀 DELIVERABLES
+-----------------------------------------------------
+📁 team-members-plugin.zip — Installable plugin file
+📝 readme.txt — This explanation file
+*/
 
-### Custom Role
-**Role Name:** `tm_hr`
-**Display Name:** `HR`
-**Capabilities:**
-- `edit_team_members`
-- `edit_others_team_members`
-- `publish_team_members`
-- `read_team_member`
-- `delete_team_members`
-
-### Activation Hook
-- Registers CPT.
-- Adds HR Role with capabilities.
-- Flushes rewrite rules.
-
-### Deactivation Hook
-- Removes HR Role.
-- Flushes rewrite rules.
-
----
-
-## 🌐 REST API
-**Base Endpoint:** `/wp-json/team/v1/members`
-
-### Supported Query Parameters
-| Parameter | Type | Description |
-|------------|------|--------------|
-| `page` | int | Page number |
-| `per_page` | int | Number of results per page |
-| `role` | string | Filter by role/designation |
-| `skills` | string | Comma-separated skills filter |
-| `search` | string | Search by name or email |
-
-### Example
-```bash
-GET https://your-site.com/wp-json/team/v1/members?per_page=3&page=1&skills=php,react
-```
-
-### Response Example
-```json
-{
-  "total": 8,
-  "per_page": 3,
-  "page": 1,
-  "members": [
-    {
-      "id": 25,
-      "name": "Priya Sharma",
-      "role": "Frontend Developer",
-      "email": "priya@example.com",
-      "skills": ["HTML", "CSS", "JS"],
-      "image": "https://your-site.com/wp-content/uploads/profile.jpg"
-    }
-  ]
-}
-```
-
-### Caching
-- Each API query result is cached using transients for **5 minutes**.
-- Cache clears automatically on post save/update.
-
----
-
-## 🧱 Elementor Widget
-**Name:** `Team Members Grid`
-
-### Widget Settings
-| Setting | Type | Description |
-|----------|------|-------------|
-| Members per page | Number | Pagination control |
-| Layout | Select | Grid / List |
-| Show Filters | Switch | Enable/disable role & skills filters |
-| Show Search | Switch | Enable/disable search bar |
-| Dark Mode | Switch | Toggle light/dark frontend style |
-
-### Behavior
-- Fetches data via REST API.
-- AJAX updates without reloading page.
-- Works with Elementor live preview.
-- Fully responsive grid layout.
-
----
-
-## 🧑‍💻 Design Choices
-
-| Feature | Approach | Reason |
-|----------|-----------|--------|
-| Data Storage | CPT + Meta Fields | Native WP integration & easy ACF/REST use |
-| Role Management | Custom `tm_hr` role | Granular access control |
-| API | REST API (`team/v1/members`) | Decoupled architecture, AJAX-ready |
-| Frontend Rendering | Elementor Widget + JS Fetch | Dynamic + editor preview support |
-| Caching | Transients | Performance boost for large lists |
-
----
-
-## ⚙️ Known Limitations & Improvements
-- Skills use text meta (not taxonomy). Future improvement: register as taxonomy for better filtering.
-- Caching logic is simple (transient-based). Could be improved with object cache or invalidation hooks.
-- Styling is minimal to keep it lightweight — can be extended via Elementor or custom CSS.
-- Limited pagination range display (previous/next only). Could add numbered pagination.
-- Elementor preview sometimes requires manual reload for AJAX widget preview (common Elementor behavior).
-
----
-
-## 💡 Optional Enhancements
-- Add search debounce for better UX.
-- Add sorting by name or role.
-- Add custom REST routes for single member detail.
-- Allow frontend submission (for HR role) via custom form.
-
----
-
-## 🧩 Evaluation Criteria Mapping
-| Area | Weight | Implementation |
-|-------|--------|----------------|
-| Backend | 40% | CPT, REST API, roles, lifecycle hooks |
-| Frontend | 40% | Elementor widget, AJAX filtering, pagination |
-| Code Quality | 20% | Modular, standards-compliant, documented |
-
----
-
-## 📦 Deliverables
-- `team-members-plugin.zip` – Installable plugin file
-- `readme.txt` – (This file)
-
----
-
-## 🧪 Testing Checklist
-✅ Plugin activates/deactivates cleanly  
-✅ CPT and HR role registered correctly  
-✅ Team Members can be added via admin  
-✅ REST API returns correct paginated, filtered data  
-✅ Elementor widget visible & functional in editor  
-✅ AJAX pagination and filtering work correctly  
-✅ Caching confirmed via transient storage  
-✅ Dark/Light mode toggles styles  
-✅ No PHP or JS console errors
-
----
-
-## 🧑‍💼 Author
-**Developed by:** Yogesh Yadav  
-**Role:** WordPress Developer  
-**Website:** [https://boldtechie.com](https://boldtechie.com)
-
----
-
-> This plugin is a complete, self-contained system built for evaluation and demonstration of clean architecture, WordPress development best practices, and Elementor integration.
+/*
+-----------------------------------------------------
+👨‍💻 ABOUT DEVELOPER
+-----------------------------------------------------
+👤 Name: Yogesh Yadav
+💼 Role: WordPress Developer
+🌐 Website: https://boldtechie.com
+📧 Purpose: Built for machine task submission (Team Members Management Plugin)
+*/
